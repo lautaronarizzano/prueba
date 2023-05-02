@@ -10,6 +10,8 @@ import {
     PRIVATE_KEY
 } from '../utils.js';
 import UserDto from '../dao/DTOs/current.dto.js'
+import {createCart} from '../controllers/carts.controller.js'
+import { cartsModel } from '../dao/models/cartsModel.js'
 
 const LocalStrategy = local.Strategy
 
@@ -35,6 +37,9 @@ const initializePassport = () => {
                 return done(null, false)
             }
 
+            // const cart = await cartsModel.create({products: [], user: user})
+
+
             const newUser = {
                 first_name,
                 last_name,
@@ -42,6 +47,7 @@ const initializePassport = () => {
                 age,
                 password: createHash(password),
                 rol: email.includes('admin') && password.includes('admin') ? 'admin' : 'user',
+                carts: await cartsModel.create({products: [], user: email})
             }
 
             const result = await userModel.create(newUser)

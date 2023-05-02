@@ -1,4 +1,6 @@
 import {cartsModel} from "../models/cartsModel.js";
+import { ticketModel } from '../models/ticketModel.js'
+
 export default class Carts {
     constructor() {
         console.log('Working carts with DB in mongoDB')
@@ -38,7 +40,8 @@ export default class Carts {
         if(!cid || !pid) return res.status(400).send({error: "cid or pid not found"})
 
         const addPost = async (post) =>{
-            const existingPost = cartToUpdate.products.find(p => p.product == post);
+
+            const existingPost = cartToUpdate.products.find(p => p.product._id == post);
             if (existingPost) {
 
                 // Actualizar post existente
@@ -71,9 +74,14 @@ export default class Carts {
 
     deleteProduct = async (cid, pid) => {
         const cart = await this.getById(cid)
-        let oldProducts = cart.products;
-        let newProducts = oldProducts.filter((prod) => String(prod.product) !== pid);
-        this.update(cid, newProducts)
+        let products = cart.products;
+        console.log(products)
+        const index = products.findIndex(p => p.product._id == pid)
+        products.splice(index, 1)
+        
+        // let newProducts = oldProducts.filter((prod) => String(prod.product) !== pid);
+
+        this.update(cid, cart.products)
     }
 
     delete = async(cid) => {
@@ -84,7 +92,7 @@ export default class Carts {
     updateQuantity = async(cid, pid, quantity) => {
         const cartToUpdate = await this.getById(cid)
 
-        const find = cartToUpdate.products.find(p => p.product == pid)
+        const find = cartToUpdate.products.find(p => p.product._id == pid)
 
         find.quantity = quantity.quantity
 
@@ -96,6 +104,11 @@ export default class Carts {
 
     updateCart = async(cid, newCart) => {
         const result = await cartsModel.updateOne({_id: cid}, newCart)
+        return result
+    }
+
+    purchase = async (ticket) => {
+        const result = await ticketModel.create(ticket)
         return result
     }
 }

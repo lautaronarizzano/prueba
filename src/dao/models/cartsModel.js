@@ -13,6 +13,9 @@ const cartSchema = mongoose.Schema({
         }
         ],
         default:[]
+    },
+    user: {
+        type: String,
     }
 })
 

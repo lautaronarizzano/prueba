@@ -1,6 +1,7 @@
 import Products from '../dao/dbManagers/products.js'
 import Carts from '../dao/dbManagers/carts.js'
 import { productModel } from '../dao/models/productModel.js'
+import UserDto from '../dao/DTOs/current.dto.js'
 
 const productsManager = new Products()
 const cartsManager = new Carts()
@@ -17,22 +18,23 @@ const products = async (req, res) => {
     const { limit = 10, page = 1, query , sort } = req.query
     
     try {        
+        const userDto = new UserDto(req.user.user)
 
         if (query == undefined) {
             const productsPaginates = await productModel.paginate({ }, {limit: limit, page: page, sort:{ price: sort}, lean:true})
             const products = productsPaginates.docs
-            res.render('products', {products, user: req.session.user})
+            res.render('products', {products, user: userDto})
             
         } else {
             if(query == "comida" || query == "bebida" || query == "complemento") {
                 const productsPaginates = await productModel.paginate({ category: query }, {limit: limit, page: page, sort:{ price: sort}, lean:true})
                 const products = productsPaginates.docs
-            res.render('products', {products, user: req.session.user})
+            res.render('products', {products, user: userDto})
             }
             else if(query == "true" || query == "false"){
                 const productsPaginates = await productModel.paginate({ status: query }, {limit: limit, page: page, sort:{ price: sort}, lean:true})
                 const products = productsPaginates.docs
-            res.render('products', {products, user: req.session.user})
+            res.render('products', {products, user: userDto})
             }
             else{
                 console.log('query is not valid')

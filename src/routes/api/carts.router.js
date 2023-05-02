@@ -9,7 +9,8 @@ import {
     deleteProductInCart,
     deleteCart,
     updateQuantity,
-    updateCart
+    updateCart,
+    purchaseCart
 } from '../../controllers/carts.controller.js'
 import { authenticateToken, authorizeRol } from '../../utils.js'
 
@@ -31,7 +32,7 @@ router.delete('/:cid/products/:pid', deleteProductInCart);
 
 router.delete('/:cid', deleteCart)
 
-// router.put('/:cid/purchase', purchaseCart)
+router.post('/:cid/purchase', authenticateToken ,purchaseCart)
 
 
 export default router

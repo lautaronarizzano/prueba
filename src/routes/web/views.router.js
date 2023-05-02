@@ -7,6 +7,7 @@ import {
     products,
     carts
 } from '../../controllers/views.controller.js'
+import { authenticateToken  } from '../../utils.js'
 
 const router = Router()
 
@@ -24,7 +25,7 @@ router.get('/register', publicAccess, register)
 
 router.get('/login', publicAccess, login)
 
-router.get('/products', privateAccess, products)
+router.get('/products', authenticateToken, privateAccess, products)
 
 router.get('/carts/:cid', carts)
 
