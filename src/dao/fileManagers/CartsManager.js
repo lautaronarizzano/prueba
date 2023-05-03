@@ -3,7 +3,7 @@ import __dirname from '../../utils.js';
 
 export default class CartManager {
     constructor() {
-        this.path = `${__dirname}/files/Carts.json`
+        this.path = `${__dirname}/dao/files/Carts.json`
     }
 
     //funcion leer carts

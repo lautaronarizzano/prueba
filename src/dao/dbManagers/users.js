@@ -10,10 +10,10 @@ export default class Users {
         return users.map(user => user.toObject())
     }
 
-    // getAllPaginated = async (limit, page) => {
-    //     const usersPaginated = await usersModel.aggregatePaginate({}, { limit, page })
-    //     return usersPaginated
-    // }
+    getAllPaginated = async (limit, page) => {
+        const usersPaginated = await usersModel.aggregatePaginate({}, { limit, page })
+        return usersPaginated
+    }
 
     save = async (user) => {
         const result = await usersModel.create(user)

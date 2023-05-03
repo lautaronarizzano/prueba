@@ -155,25 +155,17 @@ const purchaseCart = async (req, res) => {
             if (product.stock < quantity) {
                 failedProducts.push(product._id)
             }
-            
+
         }
         for (let j = 0; j < productsStock.length; j++) {
-            const productStock = productsStock[j]; // Comprobación para asegurarse de que "productStock" no sea "undefined"
+            const productStock = productsStock[j];
             if (productStock) {
                 productStock.product.stock -= productsStock[j].quantity;
                 productsToUpdate.push(productStock)
             }
             await cartsManager.deleteProduct(cid, productStock.product._id)
         }
-        
-        
-        
-        // if (failedProducts.length > 0) {
-        //     return res.status(400).json({
-        //         error: 'Not enough stock for products',
-        //         failedProducts
-        //     })
-        // }
+
         if (!productsToUpdate || productsToUpdate == null || productsToUpdate == undefined || productsToUpdate.length == 0) return res.status(400).json({
             error: 'Not enough products with stock',
             failedProducts
@@ -192,14 +184,13 @@ const purchaseCart = async (req, res) => {
 
         const date = new Date
 
-
         const totalprice = products => {
             let total = 0;
             for (let k = 0; k < products.length; k++) {
-                    const product = products[k].product
-                    const quantity = products[k].quantity;
-                    const subtotal = product.price * quantity;
-                    total += subtotal;
+                const product = products[k].product
+                const quantity = products[k].quantity;
+                const subtotal = product.price * quantity;
+                total += subtotal;
             }
             return total;
         }
@@ -211,10 +202,6 @@ const purchaseCart = async (req, res) => {
             amount: totalprice(productsToUpdate),
             purchaser: cart.user
         })
-
-        
-
-
 
 
         res.status(200).send({

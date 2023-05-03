@@ -3,8 +3,7 @@ import __dirname from '../../utils.js';
 
 export default class ProductManager {
         constructor() {
-            // this.products = [];
-            this.path = `${__dirname}/files/Products.json`;
+            this.path = `${__dirname}/dao/files/Products.json`;
         }
     
         //funcion para agregar el producto
