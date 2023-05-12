@@ -1,3 +1,6 @@
+import CustomError from "../../controllers/errors/CustomError.js";
+import EErrors from "../../controllers/errors/enums.js";
+import { cartNotFound } from "../../controllers/errors/info.js";
 import {cartsModel} from "../models/cartsModel.js";
 import { ticketModel } from '../models/ticketModel.js'
 
@@ -13,8 +16,16 @@ export default class Carts {
 
     getCartById = async(cid) => {
         const searchedCart = await cartsModel.findOne({_id:cid});
+        // if (!searchedCart || searchedCart.length == 0) {
+        //     return 'Cart not found';
+        // }
         if (!searchedCart || searchedCart.length == 0) {
-            return 'Cart not found';
+            throw CustomError.createError({
+                name: 'Cart not found',
+                cause: cartNotFound(),
+                message: 'carrito no encontrado,',
+                code: EErrors.CART_NOT_FOUND
+            })
         }
         return searchedCart;
     }

@@ -8,6 +8,7 @@ import productsRouter from './routes/api/products.router.js'
 import cartsRouter from './routes/api/carts.router.js'
 import viewsRouter from './routes/web/views.router.js'
 import sessionsRouter from './routes/api/sessions.router.js'
+import mockProductsRouter from './routes/api/mockproducts.router.js'
 import handlebars from 'express-handlebars'
 import mongoose from 'mongoose'
 // import Chats from './dao/dbManagers/chat.js'
@@ -17,6 +18,7 @@ import passport from 'passport'
 import initializePassport from './config/passport.config.js'
 import cookieParser from 'cookie-parser'
 import messagesManager from './controllers/chat.controller.js'
+import errorHandler from './middlewares/errors/errors.js'
 
 
 // const chatManager = new Chats()
@@ -57,6 +59,8 @@ app.use('/api/products', productsRouter)
 app.use('/api/carts', cartsRouter)
 app.use('/api/sessions', sessionsRouter)
 app.use('/api/auth', sessionsRouter)
+app.use('/mockingproducts', mockProductsRouter)
+app.use(errorHandler)
 
 const server = app.listen(Number(config.port), () => console.log(`Server running on port ${config.port}`))
 

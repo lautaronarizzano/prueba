@@ -10,6 +10,7 @@ import {
 } from '../../controllers/products.controller.js'
 import { authorizeRol, authenticateToken } from '../../utils.js'
 
+
 const router = Router()
 
 router.get('/', authenticateToken, authorizeRol('admin') ,getProducts)
