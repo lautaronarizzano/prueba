@@ -96,7 +96,7 @@ const getProductById = async (req, res) => {
 const createProduct = async (req, res) => {
     const { title, description, price, thumbnail, code, stock, category, status} = req.body
     if(!title || !description || !price || !code || !stock || !category) {
-        CustomError.createError({
+        throw CustomError.createError({
             name: 'IncompleteValuesError',
             cause: incompleteFieldError(),
             message: 'Error intentando crear producto',
