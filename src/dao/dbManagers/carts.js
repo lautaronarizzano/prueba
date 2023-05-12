@@ -1,6 +1,6 @@
-import CustomError from "../../controllers/errors/CustomError.js";
-import EErrors from "../../controllers/errors/enums.js";
-import { cartNotFound } from "../../controllers/errors/info.js";
+import CustomError from "../../services/errors/CustomError.js";
+import EErrors from "../../services/errors/enums.js";
+import { cartNotFound } from "../../services/errors/info.js";
 import {cartsModel} from "../models/cartsModel.js";
 import { ticketModel } from '../models/ticketModel.js'
 

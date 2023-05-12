@@ -1,6 +1,7 @@
 import { Server } from 'socket.io'
 import express from 'express'
 import __dirname from './utils.js'
+import errorHandler from './middlewares/errors/errors.js'
 import config from './config/config.js'
 import session from 'express-session'
 import chatRouter from './routes/web/chat.router.js'
@@ -18,7 +19,6 @@ import passport from 'passport'
 import initializePassport from './config/passport.config.js'
 import cookieParser from 'cookie-parser'
 import messagesManager from './controllers/chat.controller.js'
-import errorHandler from './middlewares/errors/errors.js'
 
 
 // const chatManager = new Chats()

@@ -2,9 +2,9 @@
 import { productModel } from '../dao/models/productModel.js'
 import Products from '../dao/factory/products.factory.js'
 import ProductsRepository from '../repository/products.repository.js'
-import CustomError from './errors/CustomError.js'
-import EErrors from './errors/enums.js'
-import { incompleteFieldError } from './errors/info.js'
+import CustomError from '../services/errors/CustomError.js'
+import EErrors from '../services/errors/enums.js'
+import { incompleteFieldError } from '../services/errors/info.js'
 
 const productManager = new Products()
 
@@ -68,7 +68,7 @@ const getProductById = async (req, res) => {
     try {
         const products = await productsRepository.getProductById(pid)
         if(products) {
-            throw CustomError.createError({
+            CustomError.createError({
                 name: 'PIDError',
                 cause: generatePIDErrorInfo({
                     pid
@@ -95,12 +95,15 @@ const getProductById = async (req, res) => {
 
 const createProduct = async (req, res) => {
     const { title, description, price, thumbnail, code, stock, category, status} = req.body
-    if(!title || !description || !price || !code || !stock || !category) throw CustomError.createError({
-        name: 'IncompleteValuesError',
-        cause: incompleteFieldError(),
-        message: 'Error intentando crear producto',
-        code: EErrors.PRODUCT_FIELDS_ERROR
-    })
+    if(!title || !description || !price || !code || !stock || !category) {
+        CustomError.createError({
+            name: 'IncompleteValuesError',
+            cause: incompleteFieldError(),
+            message: 'Error intentando crear producto',
+            code: EErrors.PRODUCT_FIELDS_ERROR
+        })
+    } 
+
 
     try {
         const result = await productManager.save({
