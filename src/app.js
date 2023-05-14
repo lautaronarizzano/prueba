@@ -19,11 +19,14 @@ import passport from 'passport'
 import initializePassport from './config/passport.config.js'
 import cookieParser from 'cookie-parser'
 import messagesManager from './controllers/chat.controller.js'
+import CustomError from './services/errors/CustomError.js'
 
 
 // const chatManager = new Chats()
 
 const app = express()
+
+const error = new CustomError()
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -53,6 +56,7 @@ app.engine('handlebars', handlebars.engine())
 app.set('views', `${__dirname}/views`)
 app.set('view engine', 'handlebars')
 
+app.use(errorHandler)
 app.use('/chat', chatRouter)
 app.use('/', viewsRouter)
 app.use('/api/products', productsRouter)
@@ -60,7 +64,6 @@ app.use('/api/carts', cartsRouter)
 app.use('/api/sessions', sessionsRouter)
 app.use('/api/auth', sessionsRouter)
 app.use('/mockingproducts', mockProductsRouter)
-app.use(errorHandler)
 
 const server = app.listen(Number(config.port), () => console.log(`Server running on port ${config.port}`))
 

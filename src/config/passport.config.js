@@ -10,8 +10,15 @@ import {
     PRIVATE_KEY
 } from '../utils.js';
 import UserDto from '../dao/DTOs/current.dto.js'
-import {createCart} from '../controllers/carts.controller.js'
-import { cartsModel } from '../dao/models/cartsModel.js'
+import {
+    createCart
+} from '../controllers/carts.controller.js'
+import {
+    cartsModel
+} from '../dao/models/cartsModel.js'
+import CustomError from '../services/errors/CustomError.js'
+import { incompleteRegisterFields } from '../services/errors/info.js'
+import EErrors from '../services/errors/enums.js'
 
 const LocalStrategy = local.Strategy
 
@@ -26,6 +33,15 @@ const initializePassport = () => {
             email,
             age,
         } = req.body
+
+        if (!first_name || !last_name || !email || !age) {
+            throw CustomError.createError({
+                name: 'Register failed',
+                cause: incompleteRegisterFields(first_name, last_name, email, age),
+                message: 'Error intentado registrarse',
+                code: EErrors.REGISTER_FAILED
+            })
+        }
 
         try {
             const user = await userModel.findOne({
@@ -47,7 +63,10 @@ const initializePassport = () => {
                 age,
                 password: createHash(password),
                 rol: email.includes('admin') && password.includes('admin') ? 'admin' : 'user',
-                carts: await cartsModel.create({products: [], user: email})
+                carts: await cartsModel.create({
+                    products: [],
+                    user: email
+                })
             }
 
             const result = await userModel.create(newUser)
@@ -116,7 +135,7 @@ const initializePassport = () => {
         }
         return token;
     }
-    
+
     passport.use('current', new JWTStrategy({
         jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
         secretOrKey: PRIVATE_KEY
@@ -141,10 +160,3 @@ const initializePassport = () => {
 }
 
 export default initializePassport
-
-
-
-
-
-
-

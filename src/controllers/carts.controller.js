@@ -104,6 +104,9 @@ const updateQuantity = async (req, res) => {
     const cid = req.params.cid;
     const pid = req.params.pid;
     const quantity = req.body
+    if(!quantity) {
+        return res.send('hola')
+    }
     try {
         const result = await cartsManager.updateQuantity(cid, pid, quantity)
         res.send({
@@ -124,12 +127,14 @@ const updateCart = async (req, res) => {
     const products = req.body;
     try {
         const result = cartsManager.updateCart(cartId, products)
-        return result
-    } catch (error) {
         res.send({
             status: 'success',
             message: 'The cart with id ' + cartId + ' was updated successfully with the required products.'
         });
+    } catch (error) {
+        res.status(500).send({
+            error: 'el error es ' + error
+        })
     }
 }
 

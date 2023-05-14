@@ -117,9 +117,12 @@ const createProduct = async (req, res) => {
             category
         })
         res.send({result: 'success', payload: result})
+    // } catch (error) {
+    //     res.status(500).send({error: error})
+    //     console.log(error)
+    // }
     } catch (error) {
         res.status(500).send({error: error})
-        console.log(error)
     }
 }
 

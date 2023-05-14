@@ -1,4 +1,8 @@
 import userModel from '../dao/models/usersModel.js'
+import CustomError from '../services/errors/CustomError.js';
+import { incompleteLoginFields, userNotFound, userOrPasswordIncorrect } from '../services/errors/info.js';
+import EErrors from '../services/errors/enums.js'
+
 import {
     generateToken,
     isValidPassword
@@ -25,16 +29,35 @@ const login = async (req, res) => {
         password
     } = req.body
 
+    if(!email || !password || !email.includes('@gmail.com')) {
+        throw CustomError.createError({
+            name: 'Login failed',
+            cause: incompleteLoginFields(email, password),
+            message: 'Error intentado loguearse',
+            code: EErrors.LOGIN_FAILED
+        })
+    }
+
     try {
         const user = await userModel.findOne({
             email: email
         })
 
         if (!user) {
-            return res.status(404).send('User not found')
+            throw CustomError.createError({
+                name: 'User not found',
+                cause: userNotFound(user),
+                message: 'Error intentado loguearse',
+                code: EErrors.USER_NOT_FOUND
+            })
         }
 
-        if (!isValidPassword(user, password)) return res.status(400).send('Incorrect credentials')
+        if (!isValidPassword(user, password)) throw CustomError.createError({
+            name: 'Login auth failed',
+            cause: userOrPasswordIncorrect(),
+            message: 'Error intentado loguearse',
+            code: EErrors.LOGIN_AUTH_ERROR
+        })
 
         const accessToken = generateToken(user)
 

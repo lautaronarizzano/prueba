@@ -1,6 +1,6 @@
 import CustomError from "../../services/errors/CustomError.js";
 import EErrors from "../../services/errors/enums.js";
-import { cartNotFound } from "../../services/errors/info.js";
+import { productNotFound } from "../../services/errors/info.js";
 import {cartsModel} from "../models/cartsModel.js";
 import { ticketModel } from '../models/ticketModel.js'
 
@@ -16,16 +16,8 @@ export default class Carts {
 
     getCartById = async(cid) => {
         const searchedCart = await cartsModel.findOne({_id:cid});
-        // if (!searchedCart || searchedCart.length == 0) {
-        //     return 'Cart not found';
-        // }
         if (!searchedCart || searchedCart.length == 0) {
-            throw CustomError.createError({
-                name: 'Cart not found',
-                cause: cartNotFound(),
-                message: 'carrito no encontrado,',
-                code: EErrors.CART_NOT_FOUND
-            })
+            return 'Cart not found'
         }
         return searchedCart;
     }
@@ -46,13 +38,23 @@ export default class Carts {
     }
 
     addProduct = async (cid, pid) => {
-        const cartToUpdate = await this.getById(cid)
+        const cartToUpdate = await this.getCartById(cid)
 
         if(!cid || !pid) return res.status(400).send({error: "cid or pid not found"})
 
         const addPost = async (post) =>{
 
-            const existingPost = cartToUpdate.products.find(p => p.product._id == post);
+            const existingPost = cartToUpdate.products.find(p => p.product == post);
+
+            if(!existingPost) {
+                throw CustomError.createError({
+                    name: `Product doesn't exist`,
+                    cause: productNotFound(pid),
+                    message: 'Error intentando agregar producto al carrito',
+                    code: EErrors.PRODUCT_NOT_FOUND
+                })
+            }
+
             if (existingPost) {
 
                 // Actualizar post existente
@@ -84,14 +86,15 @@ export default class Carts {
 
 
     deleteProduct = async (cid, pid) => {
-        const cart = await this.getById(cid)
+        const cart = await this.getCartById(cid)
         let products = cart.products;
-        console.log(products)
         const index = products.findIndex(p => p.product._id == pid)
+        if(index == -1) {
+            console.log('hola')
+            res.status(404).send('hola')
+        }
+            
         products.splice(index, 1)
-        
-        // let newProducts = oldProducts.filter((prod) => String(prod.product) !== pid);
-
         this.update(cid, cart.products)
     }
 
@@ -101,7 +104,7 @@ export default class Carts {
     }
 
     updateQuantity = async(cid, pid, quantity) => {
-        const cartToUpdate = await this.getById(cid)
+        const cartToUpdate = await this.getCartById(cid)
 
         const find = cartToUpdate.products.find(p => p.product._id == pid)
 
